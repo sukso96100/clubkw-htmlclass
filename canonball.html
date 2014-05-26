@@ -90,8 +90,8 @@
                 ctx.drawImage(this.img, this.sx, this.sy, this.swidth, this.sheight));
             }
             
-            var target = new Picture(targetx, targety, targetw, targeth, "hill.jpg");
-            var htarget = new Picture(htargetx, htargety, htargetw, htargeth, "plateau.jpg");
+            var target = new Picture(targetx, targety, targetw, targeth, "aa.jpg");
+            var htarget = new Picture(htargetx, htargety, htargetw, htargeth, "dd.jpg");
             var ground = new Myrectangle(0, 300, 600, 30, "rgb(10, 250, 0)");
             var cannon = new Myrectangle(cannonx, cannony, cannonlengthm canonht, "rgb(40, 40, 0)");
             var targetindex = everything.length;
@@ -121,12 +121,12 @@
                 return false;
             }
             
-            function drawball(){
+            function drawall(){
                 ctx.clearRect(0, 0, cwidth, cheight);
                 var i;
                 for (i=0; i<everything.lengthl i++){
                     var ob = everything[i];
-                    if(ob[1]){
+                    if(ob[1]){ //평행이동과 회전에 필요.
                         ctx.save();
                         ctx.translate(ob[3], ob[4]);
                         ctx.rotate(ob[2]);
@@ -140,7 +140,46 @@
                 }
             }
             
+            function changne(){
+                var dx = hrvelocity;
+                verticalve12 = verticalve11 + gravity;
+                var dy = (verticalve11 + verticalve12)*.5;
+                verticalve11 = verticalve12;
+                cball.moveit(dx, dy);
+                //목표물에 닿는지 검사
+                var bx = cball.sx;
+                var by = cball.sy;
+                if( (bx>=target.sx) && (bx<=(target.sx+target.swidth)) 
+                    && (by>=target.sy) && (by<=(target.sy+target.sheight)) ){  
+                            clearInterval(tid);
+                            //target제거하고 htarget삽입.
+                            everything.splice(targetindex,1,[htarget,false]);
+                            everything.splice(ballindex,1);
+                            drawball();
+            }
+            
+            //공이 영역 벗어났는지 검사.
+            if(by>=ground.sy){
+                clearInterval(tid);
+                }
+                 drawball();
+            }
         </script>
     </head>
+    
+    <body onLoad="init();">
+        <canvas id="canvas" width="600" height="400">
+            이 브라우저에서는 HTML5의 canvas 요소가 지원되지 않습니다.
+        </canvas>
+        <br>
+        <form name="f" id="f" onSubmit="return fire();">
+            속도, 각도응 지정하고 대포를 발사<br>
+            대포에서 발사되는 속도 <input type="number" name="vo" id="vo" value="10" min="-100" max="100"/>
+                <br>
+            각도 <input type="number" name="ang" id="ang" value="0" min="00" max="80"/>
+                <input type="submit" value="발사"/>
+        
+        </form>
+    </body>
     
 </html>
